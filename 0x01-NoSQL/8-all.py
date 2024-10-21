@@ -25,14 +25,9 @@ if __name__ == "__main__":
             pymongo.errors.PyMongoError: If an error occurs while connecting
             to the MongoDB database or retrieving documents.
         """
-        # Create a MongoClient instance
-        client = MongoClient('mongodb://127.0.0.1:27017')
-
-        # Select the database and collection
-        school_collection = client.my_db.school
 
         # Retrieve all documents from the collection
-        documents = school_collection.find()
+        documents = mongo_collection.find()
 
         # Check if the collection is empty
         if documents.count() == 0:
