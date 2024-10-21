@@ -1,1 +1,2 @@
-mongo && showdbs
+// show all the databases
+showdbs
