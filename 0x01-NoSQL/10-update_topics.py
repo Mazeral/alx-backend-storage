@@ -12,8 +12,7 @@
 **Dependencies:**
     - `pymongo` for MongoDB interactions
 
-**Authors:** [Your Name]
-**Last Updated:** [Current Date]
+**Authors:** Mohammad Omar Siddiq
 """
 
 
