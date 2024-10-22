@@ -6,9 +6,6 @@ Module for interacting with a MongoDB database.
 This module provides a function to list all documents in a MongoDB collection.
 """
 
-from pymongo import MongoClient
-
-
 if __name__ == "__main__":
     def list_all(mongo_collection):
         """
@@ -35,4 +32,4 @@ if __name__ == "__main__":
             return []
         else:
             # Return the list of documents
-            return list(documents)
+            return documents
