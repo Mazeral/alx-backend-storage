@@ -1,5 +1,10 @@
 #!/usr/bin/env python3
 
+"""module for inserting schools in MongoDB
+
+This module provide a function which inserts a new docuemnt
+"""
+
 def insert_school(mongo_collection, **kwargs):
     """
     Inserts a new document into the specified MongoDB collection.
