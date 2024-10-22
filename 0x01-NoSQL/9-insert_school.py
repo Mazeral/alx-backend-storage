@@ -25,4 +25,4 @@ def insert_school(mongo_collection, **kwargs):
         Exception: Any exception raised by the MongoDB Python driver during the
         insert operation.
     """
-    return mongo_collection.insert(**kwargs)
+    return mongo_collection.insert(kwargs)
