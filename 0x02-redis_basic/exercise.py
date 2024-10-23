@@ -37,10 +37,10 @@ def count_calls(method: Callable) -> Callable:
     # Protip: when defining a decorator it is useful to
     # use functool.wraps to conserve the original function’s name, docstring,
     # etc.
-    @wraps(method)
     # By including self as the first parameter in the wrapper function,
     # you ensure that the wrapper has access to the same instance attributes
     # and methods as the original method
+    @wraps(method)
     def wrapper(self: Any, *args, **kwargs) -> str:
         """
         The wrapper function that increments the Redis counter and
