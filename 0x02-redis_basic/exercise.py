@@ -68,7 +68,8 @@ class Cache:
         self._redis.set(uuid_key, data)
         return uuid_key
 
-    def get(self, key: str, fn: Callable = None) -> Optional[Union[bytes, str, int]]:
+    def get(self, key: str, fn: Callable = None) ->\
+            Optional[Union[bytes, str, int]]:
         """
         Retrieves a value from Redis by its key.
 
