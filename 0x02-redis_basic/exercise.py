@@ -41,7 +41,7 @@ def count_calls(method: Callable) -> Callable:
     # you ensure that the wrapper has access to the same instance attributes
     # and methods as the original method
     @wraps(method)
-    def wrapper(self: Any, *args, **kwargs) -> str:
+    def wrapper(self: Any, *args, **kwargs):
         """
         The wrapper function that increments the Redis counter and
         calls the original method.
