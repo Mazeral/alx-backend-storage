@@ -53,10 +53,8 @@ def count_calls(method: Callable) -> Callable:
             Any: The result of the original method call.
         """
         # Get the qualified name of the method to use as the Redis key.
-        qualname = method.__qualname__
-
         # Increment the Redis counter for the method.
-        self._redis.incr(qualname)
+        self._redis.incr(method.__qualname__)
 
         # Call the original method and return its result.
         return method(self, *args, **kwargs)
