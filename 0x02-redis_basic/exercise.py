@@ -20,6 +20,45 @@ Redis for storing miscellaneous data.
 import redis
 import uuid
 from typing import Union, Callable, Optional
+from functools import wraps
+
+
+def count_calls(method: Callable) -> Callable:
+    """
+    A decorator that increments a Redis counter each time the decorated
+    method is called.
+
+    Args:
+        method (Callable): The method to be decorated.
+
+    Returns:
+        Callable: The decorated method.
+    """
+    @wraps(method)
+    # By including self as the first parameter in the wrapper function,
+    # you ensure that the wrapper has access to the same instance attributes
+    # and methods as the original method
+    def wrapper(self):
+        """
+        The wrapper function that increments the Redis counter and
+        calls the original method.
+
+        Args:
+            self: The instance of the class that the method belongs to.
+
+        Returns:
+            Any: The result of the original method call.
+        """
+        # Get the qualified name of the method to use as the Redis key.
+        qualname = method.__qualname__
+
+        # Increment the Redis counter for the method.
+        self._redis.incr(qualname)
+
+        # Call the original method and return its result.
+        return method(self)
+
+    return wrapper
 
 
 class Cache:
@@ -45,6 +84,7 @@ class Cache:
         self._redis = redis.Redis()
         self._redis.flushdb()
 
+    @count_calls
     def store(self, data: Union[str, bytes, int, float]) -> str:
         """
         Stores the provided data in Redis with a uniquely generated UUID key.
