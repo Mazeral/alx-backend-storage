@@ -19,7 +19,7 @@ Redis for storing miscellaneous data.
 
 import redis
 import uuid
-from typing import Union
+from typing import Union, Callable, Optional
 
 
 class Cache:
@@ -67,3 +67,59 @@ class Cache:
         uuid_key = str(uuid.uuid4())
         self._redis.set(uuid_key, data)
         return uuid_key
+
+    def get(self, key: str, fn: Callable = None) -> Optional[Union[bytes, str, int]]:
+        """
+        Retrieves a value from Redis by its key.
+
+        Args:
+            key (str): The key of the value to retrieve.
+            fn (Callable[[bytes], Optional[Union[bytes, str, int]]], optional):
+                An optional function to apply to the retrieved value. Defaults
+                to None.
+
+        Returns:
+            Optional[Union[bytes, str, int]]: The retrieved value, or None if
+            the key does not exist.
+        """
+        value = self._redis.get(key)
+        if value is None:
+            return None
+        if fn is not None:
+            return fn(value)
+        return value
+
+    def get_str(self, key: str) -> Optional[str]:
+        """
+        Retrieves a string value from Redis by its key.
+
+        Args:
+            key (str): The key of the value to retrieve.
+
+        Returns:
+            Optional[str]: The retrieved string value, or None if the key
+            does not exist.
+        """
+        value = self._redis.get(key)
+        if value is None:
+            return None
+        return value.decode("utf-8")
+
+    def get_int(self, key: str) -> Optional[int]:
+        """
+        Retrieves an integer value from Redis by its key.
+
+        Args:
+            key (str): The key of the value to retrieve.
+
+        Returns:
+            Optional[int]: The retrieved integer value, or None if the key
+            does not exist or the value cannot be converted to an integer.
+        """
+        value = self._redis.get(key)
+        if value is None:
+            return None
+        try:
+            return int(value)
+        except ValueError:
+            return None
