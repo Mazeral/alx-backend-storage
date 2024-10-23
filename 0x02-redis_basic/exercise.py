@@ -19,7 +19,7 @@ Redis for storing miscellaneous data.
 
 import redis
 import uuid
-from typing import Union, Callable, Optional
+from typing import Union, Callable, Optional, Any
 from functools import wraps
 
 
