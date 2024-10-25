@@ -62,6 +62,46 @@ def count_calls(method: Callable) -> Callable:
     return wrapper
 
 
+def call_history(method: Callable) -> Callable:
+    """
+    Decorator to log method call history in Redis.
+
+    Stores input arguments and output values for the decorated method.
+    The log is stored under keys derived from the method's qualified name.
+
+    Args:
+        method (Callable): The method to be decorated.
+
+    Returns:
+        Callable: The decorated method with call history logging.
+    """
+    @wraps(method)
+    def wrapper(self, *args, **kwargs):
+        """
+        Wrapper function to capture and store method calls.
+
+        :param self: Instance of the class owning the method.
+        :param args: Positional arguments passed to the method.
+        :param kwargs: Keyword arguments passed to the method.
+        :return: The output of the original method call.
+        """
+        # Create keys for input and output logs based on method name
+        input_key = f"{method.__qualname__}:inputs"  # Key for input arguments
+        output_key = f"{method.__qualname__}:outputs"  # Key for output values
+
+        # Log inputs before method execution
+        self._redis.rpush(input_key, str(args))  # Store inputs in Redis
+
+        # Execute the original method and capture its output
+        output = method(self, *args, **kwargs)
+
+        # Log output after method execution
+        self._redis.rpush(output_key, str(output))  # Store output in Redis
+
+        return output  # Return the original method's output
+    return wrapper
+
+
 class Cache:
     """
     A basic cache manager class leveraging Redis for data storage.
