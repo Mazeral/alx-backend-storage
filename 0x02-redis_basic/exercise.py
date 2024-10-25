@@ -90,13 +90,13 @@ def call_history(method: Callable) -> Callable:
         output_key = f"{method.__qualname__}:outputs"  # Key for output values
 
         # Log inputs before method execution
-        self._redis.rpush(f"{input_key}, {str(args}"))  # Store inputs in Redis
+        self._redis.rpush(f"{input_key}", str(args))  # Store inputs in Redis
 
         # Execute the original method and capture its output
         output = method(self, *args)
 
         # Log output after method execution
-        self._redis.rpush(f"{output_key}, {str(output)}")  # Store output in Redis
+        self._redis.rpush(f"{output_key}", str(output))  # Store output in Redis
 
         return output  # Return the original method's output
     return wrapper
