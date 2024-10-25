@@ -93,7 +93,7 @@ def call_history(method: Callable) -> Callable:
         self._redis.rpush(input_key, str(args))  # Store inputs in Redis
 
         # Execute the original method and capture its output
-        output = method(self, *args, **kwargs)
+        output = method(self, *args)
 
         # Log output after method execution
         self._redis.rpush(output_key, str(output))  # Store output in Redis
