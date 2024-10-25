@@ -9,6 +9,7 @@ Provides a decorator to count URL requests and cache responses.
 import requests
 from typing import Callable
 import redis
+from functools import wraps
 
 
 def count_urls(method: Callable) -> Callable:
@@ -25,6 +26,8 @@ def count_urls(method: Callable) -> Callable:
     Returns:
         Callable: The decorated method with URL counting and caching.
     """
+    client = redis.Redis()
+
     @wraps(method)
     def wrapper(url: str) -> str:
         """
@@ -34,7 +37,6 @@ def count_urls(method: Callable) -> Callable:
         :return: The content of the web page.
         """
         # Establish a Redis client connection
-        client = redis.Client()
 
         # Increment the request counter for the URL
         client.incr(f"count:{url}")
