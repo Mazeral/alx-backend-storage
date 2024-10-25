@@ -41,7 +41,7 @@ def count_calls(method: Callable) -> Callable:
     # you ensure that the wrapper has access to the same instance attributes
     # and methods as the original method
     @wraps(method)
-    def wrapper(self: Any, *args, **kwargs):
+    def wrapper(self: Any, *args, **kwargs) -> str:
         """
         The wrapper function that increments the Redis counter and
         calls the original method.
@@ -55,10 +55,8 @@ def count_calls(method: Callable) -> Callable:
         # Get the qualified name of the method to use as the Redis key.
         # Increment the Redis counter for the method.
         self._redis.incr(method.__qualname__)
-
         # Call the original method and return its result.
         return method(self, *args, **kwargs)
-
     return wrapper
 
 
