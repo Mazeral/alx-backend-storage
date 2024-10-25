@@ -75,6 +75,44 @@ def call_history(method: Callable) -> Callable:
     return wrapper
 
 
+def replay(method):
+    """
+    Replays the call history of a method from Redis logs.
+
+    Prints the method's qualified name, number of calls, and each call's
+    input arguments with corresponding output values.
+
+    Args:
+        method (object): The method whose call history is to be replayed.
+                         Must have a `__qualname__` attribute.
+
+    Notes:
+        - Assumes Redis client configuration is default.
+        - Expects input/output logs to be in UTF-8 encoding.
+    """
+    # Establish a Redis client connection (using default configuration)
+    client = redis.Client()
+
+    # Retrieve the total number of calls for the method
+    calls = client.get(method.__qualname__).decode('utf-8')
+    calls = int(calls) if calls else 0  # Convert to int if not empty
+
+    # Fetch input arguments for all calls of the method
+    input_key = f"{method.__qualname__}:inputs"
+    inputs = [x.decode('utf-8') for x in client.lrange(input_key, 0, -1)]
+
+    # Fetch output values for all calls of the method
+    output_key = f"{method.__qualname__}:outputs"
+    outputs = [y.decode('utf-8') for y in client.lrange(output_key, 0, -1)]
+
+    # Print method call summary
+    print(f"{method.__qualname__} was called {calls} times:")
+
+    # Print each method call with inputs and outputs
+    for input_str, output_str in zip(inputs, outputs):
+        print(f"{method.__qualname__}(*{input_str}) -> {output_str}")
+
+
 class Cache:
     """
     A basic cache manager class leveraging Redis for data storage.
